@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>회원 목록</title>
+</head>
+<body>
+<h1>회원 목록</h1>
+
+<!-- 에러 메시지 출력 -->
+<div th:if="${errorMessage}" style="color: red; margin-bottom: 1em;">
+    <p th:text="${errorMessage}"></p>
+</div>
+
+<p><a th:href="@{/admin/members/create}">회원 등록</a></p>
+
+<p>
+<form th:action="@{/admin/members/search}" method="get">
+    <label for="memberId">회원 ID:</label>
+    <input type="number" id="memberId" name="memberId" min="1" required>
+    <button type="submit">조회</button>
+</form>
+</p>
+
+<p><a th:href="@{/admin/members}">전체 목록 보기</a></p>
+
+<p>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>이메일</th>
+        <th>비밀번호</th>
+        <th>이름</th>
+        <th>역할</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="member : ${members}">
+        <td th:text="${member.memberId}">1</td>
+        <td th:text="${member.email}">admin@email.com</td>
+        <td th:text="${member.password}">비밀번호</td>
+        <td th:text="${member.name}">회원명</td>
+        <td th:text="${member.role}">역할</td>
+        <td>
+            <a th:href="@{/admin/members/update/{id}(id=${member.memberId})}">수정</a>
+            <form th:action="@{/admin/members/delete/{id}(id=${member.memberId})}"
+                  method="post"
+                  style="display:inline;">
+                <button type="submit" onclick="return confirm('정말로 삭제하시겠습니까?')">삭제</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</p>
+
+</body>
+</html>

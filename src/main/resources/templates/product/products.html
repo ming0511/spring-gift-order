@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>상품 목록</title>
+</head>
+
+<body>
+<h1>상품 목록</h1>
+
+<!-- 에러 메시지 출력 -->
+<div th:if="${errorMessage}" style="color: red; margin-bottom: 1em;">
+    <p th:text="${errorMessage}"></p>
+</div>
+
+<p><a th:href="@{/admin/products/create}">상품 등록</a></p>
+
+<p>
+<form th:action="@{/admin/products/search}" method="get">
+    <label for="productId">상품 ID:</label>
+    <input type="number" id="productId" name="productId" min="1" required>
+    <button type="submit">조회</button>
+</form>
+</p>
+
+<p><a th:href="@{/admin/products}">전체 목록 보기</a></p>
+
+<p>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>상품명</th>
+        <th>가격</th>
+        <th>이미지 URL</th>
+        <th>"카카오" MD 협의 여부</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="product : ${products.content}">
+        <td th:text="${product.productId}"></td>
+        <td th:text="${product.name}"></td>
+        <td th:text="${product.price}"></td>
+        <td th:text="${product.imageUrl}"></td>
+        <td th:text="${product.mdConfirmed}"></td>
+        <td>
+            <a th:href="@{/admin/products/update/{id}(id=${product.productId})}">수정</a>
+            <form th:action="@{/admin/products/delete/{id}(id=${product.productId})}"
+                  method="post"
+                  style="display:inline;">
+                <button type="submit" onclick="return confirm('정말로 삭제하시겠습니까?')">삭제</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</p>
+
+<!-- 페이지네이션 -->
+<div th:if="${products.totalPages > 0}" class="pagination"
+     th:each="pageNumber : ${pageNumbers}">
+    <a th:href="@{/admin/products(page=${pageNumber - 1}, size=${products.size},
+				sort=${products.sort})}"
+       th:text="${pageNumber}"
+       th:class="${pageNumber==products.number + 1} ? 'active' : ''"></a>
+</div>
+
+</body>
+</html>

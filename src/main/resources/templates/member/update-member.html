@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>회원 수정</title>
+</head>
+<body>
+<h1>상품 수정</h1>
+
+<!-- 전체 에러 메시지 출력 -->
+<div th:if="${errorMessage}" style="color: red; margin-bottom: 10px;">
+    <p th:text="${errorMessage}"></p>
+</div>
+
+<!-- 개별 필드 검증 오류 출력 -->
+<div th:if="${errors != null}">
+    <ul style="color: red;">
+        <li th:each="err : ${errors}" th:text="${err.defaultMessage}"></li>
+    </ul>
+</div>
+
+<form th:action="@{/admin/members/update/{id}(id=${member.memberId})}" method="post">
+    <div>
+        <label for="email">이메일:</label>
+        <input type="text" id="email" name="email" th:value="${member.email}" required/>
+    </div>
+    <div>
+        <label for="password">비밀번호:</label>
+        <input type="text" id="password" name="password" th:value="${member.password}" required/>
+    </div>
+    <div>
+        <label for="name">회원명:</label>
+        <input type="text" id="name" name="name" th:value="${member.name}"/>
+    </div>
+    <div>
+        <label for="role">역할:</label>
+        <input type="text" id="role" name="role" th:value="${member.role}"/>
+    </div>
+    <button type="submit" onclick="return confirm('회원 정보를 수정하시겠습니까?')">수정</button>
+</form>
+<a th:href="@{/admin/members}">목록으로 돌아가기</a>
+</body>
+</html>

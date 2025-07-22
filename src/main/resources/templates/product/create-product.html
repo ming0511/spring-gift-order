@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>상품 등록</title>
+</head>
+<body>
+<h1>상품 등록</h1>
+
+<!-- 전체 에러 메시지 출력 -->
+<div th:if="${errorMessage}" style="color: red; margin-bottom: 10px;">
+    <p th:text="${errorMessage}"></p>
+</div>
+
+<!-- 개별 필드 검증 오류 출력 -->
+<div th:if="${errors != null}">
+    <ul style="color: red;">
+        <li th:each="err : ${errors}" th:text="${err.defaultMessage}"></li>
+    </ul>
+</div>
+
+<form th:action="@{/admin/products/create}" method="post">
+    <div>
+        <label for="name">상품명:</label>
+        <input type="text" id="name" name="name" required/>
+    </div>
+    <div>
+        <label for="price">가격:</label>
+        <input type="number" id="price" name="price" required/>
+    </div>
+    <div>
+        <label for="imageUrl">이미지 URL:</label>
+        <input type="url" id="imageUrl" name="imageUrl" required/>
+    </div>
+    <div>
+        <label for="mdConfirmed">"카카오" MD 협의 여부:</label>
+        <input type="checkbox" id="mdConfirmed" name="mdConfirmed" value="true"/>
+        <input type="hidden" name="mdConfirmed" value="false"/>
+    </div>
+    <button type="submit" onclick="return confirm('상품을 등록하시겠습니까?')">등록</button>
+</form>
+<a th:href="@{/admin/products}">목록으로 돌아가기</a>
+
+</body>
+</html>
