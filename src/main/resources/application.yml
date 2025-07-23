@@ -19,3 +19,10 @@ spring:
 logging:
   level:
     org.hibernate.orm.jdbc.bind: TRACE
+
+kakao:
+  client-id: ${KAKAO_CLIENT_ID:your_client_id_here}
+  client-secret: ${KAKAO_CLIENT_SECRET:your_client_secret_here}
+  redirect-uri: http://localhost:8080
+  kauth-host: https://kauth.kakao.com
+  kapi-host: https://kapi.kakao.com
