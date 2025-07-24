@@ -10,10 +10,10 @@
 
 카카오 로그인을 통해 인가 코드를 받고, 인가 코드를 사용해 토큰을 받은 후 향후 카카오 API 사용을 준비한다.
 
-- [ ] 카카오계정 로그인을 통해 인증 코드를 받는다.
-- [ ] 토큰 받기를 읽고 액세스 토큰을 추출한다.
-- [ ] 앱 키, 인가 코드가 절대 유출되지 않도록 한다.
-    - [ ] 특히 시크릿 키는 GitHub나 클라이언트 코드 등 외부에서 볼 수 있는 곳에 추가하지 않는다.
+- [x] 카카오계정 로그인을 통해 인증 코드를 받는다.
+- [x] 토큰 받기를 읽고 액세스 토큰을 추출한다.
+- [x] 앱 키, 인가 코드가 절대 유출되지 않도록 한다.
+    - [x] 특히 시크릿 키는 GitHub나 클라이언트 코드 등 외부에서 볼 수 있는 곳에 추가하지 않는다.
 - (선택) 인가 코드를 받는 방법이 불편한 경우 카카오 로그인 화면을 구현한다.
 
 #### 🛠 구현할 기능 목록
@@ -22,15 +22,15 @@
 
 **서버 요청**
 
-- [ ] 인증 코드 받기
+- [x] 인증 코드 받기
 
 1. 서비스 서버가 카카오 인증 서버로 인가 코드 받기를 요청한다.(동의)
 2. 카카오 인증서버는 서비스 서버의 리다이렉트 URI로 인가 코드를 전달한다.
 
-    - [ ] **Request**: GET `https://kauth.kakao.com/oauth/authorize`
+    - [x] **Request**: GET `https://kauth.kakao.com/oauth/authorize`
 
       | 이름	| 타입	| 설명	| 필수 |
-                                                                                                                                                                          |---|---|---|---|
+                                                                                                                                                                                |---|---|---|---|
       | client_id	| String	| 앱 REST API 키 |	O |
       | redirect_uri	| String	| 인가 코드를 전달받을 서비스 서버의 URI | O |
       | response_type	| String	| code로 고정	| O |
@@ -42,7 +42,7 @@
             - `&redirect_uri=http://localhost:8080`
             - `&client_id=${REST_API_KEY}`
 
-- [ ] **Response**
+- [x] **Response**
     ```http
     HTTP/1.1 302
     Content-Type: 0
@@ -55,17 +55,17 @@
         Location: ${REDIRECT_URI}?error=access_denied&error_description=User%20denied%20access
         ```
 
-- [ ] 토큰 받기
+- [x] 토큰 받기
 
 1. 서비스 서버가 리다이렉트 URL로 전달받은 인가 코드로 토큰 받기를 요청한다.
 2. 카카오 인증 서버가 토큰을 발급해 서비스 서버에 전달한다.
 
-    - [ ] **Request**: POST `https://kauth.kakao.com/oauth/token`
+    - [x] **Request**: POST `https://kauth.kakao.com/oauth/token`
         ```http
         Content-Type: application/x-www-form-urlencoded;charset=utf-8
         ``` 
       | 이름 | 타입 | 설명 | 필수 |
-                                                                                                                  |---|---|---|---|
+                                                                                                                        |---|---|---|---|
       | grant_type | String | authorization_code로 고정 | O |
       | client_id | String | 앱 REST API 키 | O |
       | redirect_uri | String | 인가 코드가 리다이렉트된 URI | O |
@@ -81,7 +81,7 @@
             -d "code=${AUTHORIZE_CODE}"
         ```
 
-    - [ ] **Response**
+    - [x] **Response**
         ```http
         HTTP/1.1 200
         Content-Type: application/json;charset=UTF-8
@@ -97,7 +97,7 @@
         }
         ```
       | 이름	| 타입	| 설명	| 필수 |
-                                                                                          |---|---|---|---|
+                                                                                                |---|---|---|---|
       | token_type	| String	| 토큰 타입, bearer로 고정 |	O |
       | access_token	| String |	사용자 액세스 토큰 값	| O |
       | expires_in	| Integer	| 액세스 토큰과 ID 토큰의 만료 시간(초)	| O |
@@ -111,27 +111,27 @@
 2. 서비스 회원 정보 확인 결과에 따라 서비스 로그인 또는 회원 가입한다.
 3. 이 외 서비스에서 필요한 로그인 절차를 수행한 후, 카카오 로그인한 사용자의 서비스 로그인 처리를 완료한다.
 
-- [ ] 사용자 정보 가져오기
+- [x] 사용자 정보 가져오기
 
-    - [ ] **Request**: GET/POST `https://kapi.kakao.com/v2/user/me`
+    - [x] **Request**: GET/POST `https://kapi.kakao.com/v2/user/me`
       액세스 토큰 방식
         - 헤더
 
           | 이름	| 설명	| 필수 |
-                                                            |---|---|---|
+                                                                      |---|---|---|
           | Authorization	| Authorization: Bearer ${ACCESS_TOKEN} | O |
           | Content-Type	| Content-Type: application/x-www-form-urlencoded;charset=utf-8 | O |
 
         - 쿼리 파라미터
 
           | 이름	| 타입	| 설명	| 필수 |
-                                                  |---|---|---|---|
+                                                            |---|---|---|---|
           | secure_resource |	Boolean	| 이미지 URL 값 HTTPS 여부, true 설정 시 HTTPS 사용, 기본 값 false	| X |
           | property_keys	| PropertyKeys[]	| Property 키 목록, JSON Array를 ["kakao_account.email"]과 같은 형식으로 사용 | X |
 
-    - [ ] **Response**: 성공, 모든 사용자 정보 포함
+    - [x] **Response**: 성공, 모든 사용자 정보 포함
         - 일부 사용자 정보의 동의항목은 설정 권한 필요, 동의항목 참고
 
       | 이름	| 타입	| 설명	| 필수 |
-                  |---|---|---|---|
+                        |---|---|---|---|
       |   id	| Long	| 회원번호	| O |
