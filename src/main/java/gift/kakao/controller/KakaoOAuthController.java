@@ -4,7 +4,6 @@ import gift.kakao.service.KakaoOAuthService;
 import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
@@ -26,19 +25,15 @@ public class KakaoOAuthController {
 
     @GetMapping("/redirect")
     public ResponseEntity<?> kakaoRedirect(@RequestParam("code") String code) {
-        String accessToken = kakaoOAuthService.getToken(code);
-        return ResponseEntity.ok(Map.of("access_token", accessToken));
+        Boolean response = kakaoOAuthService.getToken(code);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/profile")
-    public ResponseEntity<?> getProfile(@RequestHeader("Authorization") String authHeader) {
-        String accessToken = authHeader.replace("Bearer ", "");
-        if (accessToken == null) {
-            return ResponseEntity.status(401).body("Unauthorized: No access token in session");
-        }
+    public ResponseEntity<?> getProfile() {
+        Map<String, Object> profile = kakaoOAuthService.getUserProfile();
 
-        Map<String, Object> profile = kakaoOAuthService.getUserProfile(accessToken);
-
-        return ResponseEntity.ok(profile);
+        return ResponseEntity.ok(true);
     }
 }
