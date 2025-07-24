@@ -3,6 +3,7 @@ package gift.kakao.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.URI;
 import java.util.Map;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -12,15 +13,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 public class KakaoOAuthServiceImpl implements KakaoOAuthService {
 
     @Value("${kakao.client-id}")
     private String clientId;
-
-    @Value("${kakao.client-secret}")
-    private String clientSecret;
 
     @Value("${kakao.kauth-host}")
     private String kauthHost;
@@ -39,7 +38,20 @@ public class KakaoOAuthServiceImpl implements KakaoOAuthService {
         this.restClient = restClientBuilder.build();
     }
 
-    private String getToken(String code) {
+    @Override
+    public String getAuthorizationUrl(String scope) {
+        return UriComponentsBuilder
+            .fromHttpUrl(kauthHost + "/oauth/authorize")
+            .queryParam("client_id", clientId)
+            .queryParam("redirect_uri", redirectUri)
+            .queryParam("response_type", "code")
+            .queryParamIfPresent("scope", scope != null ? Optional.of(scope) : Optional.empty())
+            .build()
+            .toUriString();
+    }
+
+    @Override
+    public String getToken(String code) {
         var url = kauthHost + "/oauth/token";
 
         var headers = new HttpHeaders();
@@ -64,7 +76,7 @@ public class KakaoOAuthServiceImpl implements KakaoOAuthService {
             return (String) response.get("access_token");
 
         } catch (RestClientException e) {
-            throw new RuntimeException("토큰 요청 실패", e);
+            throw new RuntimeException("토큰 요청 실패: " + e.getMessage(), e);
         }
     }
 }
