@@ -1,14 +1,10 @@
 package gift.kakao.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.net.URI;
 import java.util.Map;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestClient;
@@ -54,16 +50,11 @@ public class KakaoOAuthServiceImpl implements KakaoOAuthService {
     public String getToken(String code) {
         var url = kauthHost + "/oauth/token";
 
-        var headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
-
         var body = new LinkedMultiValueMap<String, String>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", clientId);
         body.add("redirect_uri", redirectUri);
         body.add("code", code);
-
-        var request = new RequestEntity<>(body, headers, HttpMethod.POST, URI.create(url));
 
         try {
             Map<String, Object> response = restClient.post()
@@ -77,6 +68,28 @@ public class KakaoOAuthServiceImpl implements KakaoOAuthService {
 
         } catch (RestClientException e) {
             throw new RuntimeException("토큰 요청 실패: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public Map<String, Object> getUserProfile(String accessToken) {
+        var url = kapiHost + "/v2/user/me";
+
+        try {
+            Map<String, Object> response = restClient.get()
+                .uri(url)
+                .headers(headers -> {
+                    headers.setBearerAuth(accessToken);
+                    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+                })
+                .retrieve()
+                .toEntity(Map.class)
+                .getBody();
+
+            return response;
+
+        } catch (RestClientException e) {
+            throw new RuntimeException("사용자 정보 요청 실패: " + e.getMessage(), e);
         }
     }
 }
