@@ -6,7 +6,7 @@ public interface KakaoOAuthService {
 
     String getAuthorizationUrl(String scope);
 
-    String getToken(String code);
+    Boolean getToken(String code);
 
-    Map<String, Object> getUserProfile(String accessToken);
+    Map<String, Object> getUserProfile();
 }

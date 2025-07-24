@@ -1,6 +1,6 @@
 package gift.kakao.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpSession;
 import java.util.Map;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
@@ -26,12 +28,23 @@ public class KakaoOAuthServiceImpl implements KakaoOAuthService {
     @Value("${kakao.redirect-uri}")
     private String redirectUri;
 
-    private final ObjectMapper objectMapper;
     private final RestClient restClient;
 
-    public KakaoOAuthServiceImpl(ObjectMapper objectMapper, RestClient.Builder restClientBuilder) {
-        this.objectMapper = objectMapper;
+    public KakaoOAuthServiceImpl(RestClient.Builder restClientBuilder) {
         this.restClient = restClientBuilder.build();
+    }
+
+    private HttpSession getSession() {
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        return attributes.getRequest().getSession();
+    }
+
+    private void saveAccessToken(String accessToken) {
+        getSession().setAttribute("access_token", accessToken);
+    }
+
+    private String getAccessToken() {
+        return (String) getSession().getAttribute("access_token");
     }
 
     @Override
@@ -47,7 +60,7 @@ public class KakaoOAuthServiceImpl implements KakaoOAuthService {
     }
 
     @Override
-    public String getToken(String code) {
+    public Boolean getToken(String code) {
         var url = kauthHost + "/oauth/token";
 
         var body = new LinkedMultiValueMap<String, String>();
@@ -64,7 +77,8 @@ public class KakaoOAuthServiceImpl implements KakaoOAuthService {
                 .retrieve()
                 .body(Map.class);
 
-            return (String) response.get("access_token");
+            saveAccessToken((String) response.get("access_token"));
+            return true;
 
         } catch (RestClientException e) {
             throw new RuntimeException("토큰 요청 실패: " + e.getMessage(), e);
@@ -72,14 +86,14 @@ public class KakaoOAuthServiceImpl implements KakaoOAuthService {
     }
 
     @Override
-    public Map<String, Object> getUserProfile(String accessToken) {
+    public Map<String, Object> getUserProfile() {
         var url = kapiHost + "/v2/user/me";
 
         try {
             Map<String, Object> response = restClient.get()
                 .uri(url)
                 .headers(headers -> {
-                    headers.setBearerAuth(accessToken);
+                    headers.setBearerAuth(getAccessToken());
                     headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
                 })
                 .retrieve()
