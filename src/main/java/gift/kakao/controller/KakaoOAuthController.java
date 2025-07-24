@@ -24,6 +24,12 @@ public class KakaoOAuthController {
         return new RedirectView(kakaoOAuthService.getAuthorizationUrl(scope));
     }
 
+    @GetMapping("/redirect")
+    public ResponseEntity<?> kakaoRedirect(@RequestParam("code") String code) {
+        String accessToken = kakaoOAuthService.getToken(code);
+        return ResponseEntity.ok(Map.of("access_token", accessToken));
+    }
+
     @GetMapping("/profile")
     public ResponseEntity<?> getProfile(@RequestHeader("Authorization") String authHeader) {
         String accessToken = authHeader.replace("Bearer ", "");
