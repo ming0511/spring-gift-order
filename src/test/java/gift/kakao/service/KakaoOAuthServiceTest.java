@@ -16,7 +16,7 @@ class KakaoOAuthServiceTest {
 
     @Test
     void getAuthorizationUrl() {
-        String authUrl = kakaoOAuthService.getAuthorizationUrl("talk_scope");
+        String authUrl = kakaoOAuthService.getAuthorizationUrl("talk_message");
         System.out.println(authUrl);
     }
 }
