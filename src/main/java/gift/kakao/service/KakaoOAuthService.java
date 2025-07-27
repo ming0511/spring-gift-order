@@ -31,7 +31,9 @@ public class KakaoOAuthService implements OAuthService {
     private final RestClient restClient;
 
     public KakaoOAuthService(RestClient.Builder restClientBuilder) {
-        this.restClient = restClientBuilder.build();
+        this.restClient = restClientBuilder
+            .baseUrl("https://kauth.kakao.com")
+            .build();
     }
 
     private HttpSession getSession() {
