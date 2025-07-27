@@ -1,10 +1,12 @@
 package gift.kakao.service;
 
 import jakarta.servlet.http.HttpSession;
+import java.time.Duration;
 import java.util.Map;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestClient;
@@ -31,8 +33,13 @@ public class KakaoOAuthService implements OAuthService {
     private final RestClient restClient;
 
     public KakaoOAuthService(RestClient.Builder restClientBuilder) {
+        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+        requestFactory.setConnectTimeout((int) Duration.ofSeconds(5).toMillis());
+        requestFactory.setReadTimeout((int) Duration.ofSeconds(3).toMillis());
+
         this.restClient = restClientBuilder
             .baseUrl("https://kauth.kakao.com")
+            .requestFactory(requestFactory)
             .build();
     }
 
