@@ -1,6 +1,6 @@
 package gift.kakao.controller;
 
-import gift.kakao.service.KakaoOAuthService;
+import gift.kakao.service.OAuthService;
 import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,9 +11,9 @@ import org.springframework.web.servlet.view.RedirectView;
 @RestController
 public class KakaoOAuthController {
 
-    private final KakaoOAuthService kakaoOAuthService;
+    private final OAuthService kakaoOAuthService;
 
-    public KakaoOAuthController(KakaoOAuthService kakaoOAuthService) {
+    public KakaoOAuthController(OAuthService kakaoOAuthService) {
         this.kakaoOAuthService = kakaoOAuthService;
     }
 

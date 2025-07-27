@@ -12,7 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 class KakaoOAuthServiceTest {
 
     @Autowired
-    private KakaoOAuthService kakaoOAuthService;
+    private OAuthService kakaoOAuthService;
 
     @Test
     void getAuthorizationUrl() {
