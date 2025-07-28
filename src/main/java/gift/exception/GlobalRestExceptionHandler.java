@@ -61,4 +61,11 @@ public class GlobalRestExceptionHandler {
     public ResponseEntity<String> handleForbiddenException(RuntimeException ex) {
         return new ResponseEntity<>("오류: " + ex.getMessage(), HttpStatus.FORBIDDEN);
     }
+
+    // 500
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<String> handleRuntime(RuntimeException ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body("오류 발생: " + ex.getMessage());
+    }
 }

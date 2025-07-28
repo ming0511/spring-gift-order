@@ -181,9 +181,10 @@ class ProductControllerTest {
     })
     void 단건상품등록_BAD_REQUEST_상품이름_유효성_검사(String invalidName) {
         //given
-        var request = ProductBuilder.aProduct()
-            .withName(invalidName)
-            .build();
+        Set<OptionCreateRequestDto> options = new HashSet<>(Set.of(
+            new OptionCreateRequestDto("test", 1), new OptionCreateRequestDto("test2", 2)));
+
+        var request = new ProductCreateRequestDto(invalidName, 1234.0, "email.com", false, options);
 
         // when & then
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)

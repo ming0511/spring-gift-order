@@ -150,14 +150,16 @@ class WishControllerTest {
         System.out.println(actual);
     }
 
-    //
     @ParameterizedTest
     @MethodSource("tokenProvider")
     void 위시상품추가_BAD_REQUEST_유효성검사실패(String token) {
-        // given & when & then
+        // given
+        var request = new WishCreateRequestDto(null);
+
+        // when & then
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
             .isThrownBy(
-                () -> exchange(HttpMethod.POST, baseUrl(), token, null,
+                () -> exchange(HttpMethod.POST, baseUrl(), token, request,
                     new ParameterizedTypeReference<WishCreateResponseDto>() {
                     })
             );
