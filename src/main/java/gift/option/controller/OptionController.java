@@ -51,7 +51,7 @@ public class OptionController {
             option.getQuantity()
         );
 
-        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
     @GetMapping("/{productId}/options")
@@ -67,7 +67,7 @@ public class OptionController {
                 option.getQuantity()))
             .collect(Collectors.toList());
 
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        return ResponseEntity.ok(responseDto);
     }
 
     @PutMapping("/{productId}/options/{optionId}")
