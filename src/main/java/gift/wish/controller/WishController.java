@@ -38,7 +38,7 @@ public class WishController {
 
         WishCreateResponseDto responseDto = wishService.addWish(memberId, dto);
 
-        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
     // /api/wishes?page=0&size=10&sort=createdAt,desc
@@ -48,7 +48,7 @@ public class WishController {
 
         WishPageResponseDto responseDto = wishService.getWishes(memberId, pageable);
 
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        return ResponseEntity.ok(responseDto);
     }
 
     @DeleteMapping("/{wishId}")
@@ -59,5 +59,3 @@ public class WishController {
         return ResponseEntity.noContent().build();
     }
 }
-
-// TODO: 수량 변경 필요?
