@@ -1,8 +1,8 @@
 package gift.kakao.controller;
 
+import gift.kakao.dto.KakaoUserProfile;
 import gift.kakao.service.KakaoMessageService;
 import gift.kakao.service.OAuthService;
-import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,7 +36,7 @@ public class KakaoOAuthController {
 
     @GetMapping("/profile")
     public ResponseEntity<?> getProfile() {
-        Map<String, Object> profile = kakaoOAuthService.getUserProfile();
+        KakaoUserProfile profile = kakaoOAuthService.getUserProfile();
 
         return ResponseEntity.ok(true);
     }
@@ -44,7 +44,7 @@ public class KakaoOAuthController {
     @GetMapping("/message")
     public ResponseEntity<?> sendTextMessage() {
         String message = "default";
-        
+
         String templateJson = kakaoMessageService.createTextMessage(message);
         kakaoMessageService.sendTextMessage(templateJson);
         return ResponseEntity.ok().build();
