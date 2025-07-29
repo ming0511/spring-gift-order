@@ -5,6 +5,7 @@ import gift.exception.member.LoginFailedException;
 import gift.exception.member.MemberNotFoundException;
 import gift.exception.option.DuplicateOptionNameException;
 import gift.exception.option.OptionNotFoundException;
+import gift.exception.order.OutOfStockException;
 import gift.exception.product.ProductMismatchException;
 import gift.exception.product.ProductNotFoundException;
 import gift.exception.product.UnapprovedProductException;
@@ -39,6 +40,12 @@ public class GlobalRestExceptionHandler {
     // 400 입력 값 검증 실패 - 옵션 이름 중복, 잘못된 옵션 ID
     @ExceptionHandler({DuplicateOptionNameException.class, ProductMismatchException.class})
     public ResponseEntity<String> handleDuplicateOptionNameException(RuntimeException ex) {
+        return new ResponseEntity<>("오류: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    // 400 재고 부족
+    @ExceptionHandler(OutOfStockException.class)
+    public ResponseEntity<String> handleOutOfStockException(RuntimeException ex) {
         return new ResponseEntity<>("오류: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
