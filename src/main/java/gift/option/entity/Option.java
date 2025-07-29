@@ -38,6 +38,14 @@ public class Option {
     protected Option() {
     }
 
+    public Option(Integer quantity) {
+        this(null, null, quantity, null);
+    }
+
+    public Option(Integer quantity, Product product) {
+        this(null, null, quantity, product);
+    }
+
     public Option(OptionName name, Integer quantity) {
         this(null, name, quantity, null);
     }
