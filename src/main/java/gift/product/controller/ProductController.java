@@ -67,7 +67,7 @@ public class ProductController {
             product.getName(), product.getPrice(), product.getImageUrl(), product.getMdConfirmed(),
             optionResponseDtos);
 
-        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
     @GetMapping
@@ -82,7 +82,7 @@ public class ProductController {
 
         ProductGetResponseDto responseDto = productService.findProductById(productId);
 
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        return ResponseEntity.ok(responseDto);
     }
 
     @PutMapping("/{productId}")
@@ -94,13 +94,13 @@ public class ProductController {
 
         productService.updateProduct(productId, dto);
 
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{productId}")
     public ResponseEntity<Void> deleteProductById(@PathVariable Long productId) {
 
         productService.deleteProduct(productId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 }
