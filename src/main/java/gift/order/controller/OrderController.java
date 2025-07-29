@@ -38,6 +38,6 @@ public class OrderController {
         OrderCreateResponseDto responseDto = new OrderCreateResponseDto(order.getId(),
             order.getOptionId(), order.getQuantity(), order.getOrderDateTime(), order.getMessage());
 
-        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 }
