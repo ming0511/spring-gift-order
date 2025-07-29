@@ -1,5 +1,6 @@
 package gift.kakao.service;
 
+import gift.kakao.dto.KakaoUserProfile;
 import jakarta.servlet.http.HttpSession;
 import java.time.Duration;
 import java.util.Map;
@@ -96,18 +97,18 @@ public class KakaoOAuthService implements OAuthService, KakaoMessageService {
     }
 
     @Override
-    public Map<String, Object> getUserProfile() {
+    public KakaoUserProfile getUserProfile() {
         var url = kapiHost + "/v2/user/me";
 
         try {
-            Map<String, Object> response = restClient.get()
+            KakaoUserProfile response = restClient.get()
                 .uri(url)
                 .headers(headers -> {
                     headers.setBearerAuth(getAccessToken());
                     headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
                 })
                 .retrieve()
-                .toEntity(Map.class)
+                .toEntity(KakaoUserProfile.class)
                 .getBody();
 
             return response;

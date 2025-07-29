@@ -1,6 +1,6 @@
 package gift.kakao.service;
 
-import java.util.Map;
+import gift.kakao.dto.KakaoUserProfile;
 
 public interface OAuthService {
 
@@ -8,5 +8,5 @@ public interface OAuthService {
 
     Boolean getToken(String code);
 
-    Map<String, Object> getUserProfile();
+    KakaoUserProfile getUserProfile();
 }
