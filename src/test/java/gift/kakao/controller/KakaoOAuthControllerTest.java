@@ -1,11 +1,14 @@
 package gift.kakao.controller;
 
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import gift.kakao.service.KakaoMessageService;
 import gift.kakao.service.OAuthService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,9 @@ class KakaoOAuthControllerTest {
 
     @MockBean
     private OAuthService kakaoOAuthService;
+
+    @MockBean
+    private KakaoMessageService kakaoMessageService;
 
     @Test
     void authorize() throws Exception {
@@ -75,6 +81,31 @@ class KakaoOAuthControllerTest {
 
         mockMvc.perform(get("/profile"))
             .andExpect(status().is5xxServerError());
+    }
+
+    @Test
+    void sendTextMessage() throws Exception {
+        String mockTemplateJson = """
+                {
+                  "object_type": "text",
+                  "text": "default",
+                  "link": {
+                    "web_url": "http://localhost:8080",
+                    "mobile_web_url": "http://localhost:8080"
+                  }
+                }
+            """;
+
+        when(kakaoMessageService.createTextMessage("default")).thenReturn(mockTemplateJson);
+        doNothing().when(kakaoMessageService).sendTextMessage(mockTemplateJson);
+
+        // when & then
+        mockMvc.perform(get("/message"))
+            .andExpect(status().isOk());
+
+        // verify internal calls
+        verify(kakaoMessageService).createTextMessage("default");
+        verify(kakaoMessageService).sendTextMessage(mockTemplateJson);
     }
 
 
