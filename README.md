@@ -30,7 +30,7 @@
     - [x] **Request**: GET `https://kauth.kakao.com/oauth/authorize`
 
       | 이름	| 타입	| 설명	| 필수 |
-                  |---|---|---|---|
+            |---|---|---|---|
       | client_id	| String	| 앱 REST API 키 |	O |
       | redirect_uri	| String	| 인가 코드를 전달받을 서비스 서버의 URI | O |
       | response_type	| String	| code로 고정	| O |
@@ -65,7 +65,7 @@
         Content-Type: application/x-www-form-urlencoded;charset=utf-8
         ``` 
       | 이름 | 타입 | 설명 | 필수 |
-                  |---|---|---|---|
+            |---|---|---|---|
       | grant_type | String | authorization_code로 고정 | O |
       | client_id | String | 앱 REST API 키 | O |
       | redirect_uri | String | 인가 코드가 리다이렉트된 URI | O |
@@ -97,7 +97,7 @@
         }
         ```
       | 이름	| 타입	| 설명	| 필수 |
-                  |---|---|---|---|
+            |---|---|---|---|
       | token_type	| String	| 토큰 타입, bearer로 고정 |	O |
       | access_token	| String |	사용자 액세스 토큰 값	| O |
       | expires_in	| Integer	| 액세스 토큰과 ID 토큰의 만료 시간(초)	| O |
@@ -118,14 +118,14 @@
         - 헤더
 
           | 이름	| 설명	| 필수 |
-                              |---|---|---|
+                    |---|---|---|
           | Authorization	| Authorization: Bearer ${ACCESS_TOKEN} | O |
           | Content-Type	| Content-Type: application/x-www-form-urlencoded;charset=utf-8 | O |
 
         - 쿼리 파라미터
 
           | 이름	| 타입	| 설명	| 필수 |
-                              |---|---|---|---|
+                    |---|---|---|---|
           | secure_resource |	Boolean	| 이미지 URL 값 HTTPS 여부, true 설정 시 HTTPS 사용, 기본 값 false	| X |
           | property_keys	| PropertyKeys[]	| Property 키 목록, JSON Array를 ["kakao_account.email"]과 같은 형식으로 사용 | X |
 
@@ -133,7 +133,7 @@
         - 일부 사용자 정보의 동의항목은 설정 권한 필요, 동의항목 참고
 
       | 이름	| 타입	| 설명	| 필수 |
-                  |---|---|---|---|
+            |---|---|---|---|
       |   id	| Long	| 회원번호	| O |
 
 ### 🚀 2단계 - 주문하기
@@ -186,20 +186,20 @@
             - 헤더
 
               | 이름	| 설명	| 필수 |
-                                          |---|---|---|
+                            |---|---|---|
               | Authorization	| Authorization: Bearer ${ACCESS_TOKEN} | O |
               | Content-Type	| Content-Type: application/x-www-form-urlencoded;charset=utf-8 | O |
 
             - 본문
 
               | 이름	| 타입	| 설명	| 필수 |
-                                          |---|---|---|---|
+                            |---|---|---|---|
               | template_object	| Object	| 메시지 구성 요소를 담은 객체(Object) - 피드, 리스트, 위치, 커머스, 텍스트, 캘린더 중 하나	| O |
 
     - [x] **Response**
 
       |이름|타입|설명|필수|
-                  |---|---|---|---|
+            |---|---|---|---|
       |result_code|Integer|전송 성공 시 0|O|
 
 - 텍스트 템플릿
