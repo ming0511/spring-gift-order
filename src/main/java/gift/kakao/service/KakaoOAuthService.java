@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -16,7 +17,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
-public class KakaoOAuthService implements OAuthService {
+public class KakaoOAuthService implements OAuthService, KakaoMessageService {
 
     @Value("${kakao.client-id}")
     private String clientId;
@@ -115,4 +116,43 @@ public class KakaoOAuthService implements OAuthService {
             throw new RuntimeException("사용자 정보 요청 실패: " + e.getMessage(), e);
         }
     }
+
+    @Override
+    public String createTextMessage(String userMessage) {
+        String message =
+            (userMessage != null && !userMessage.isBlank()) ? userMessage : "기본 메시지입니다.";
+
+        return """
+                {
+                    "object_type": "text",
+                    "text": "%s",
+                    "link": {
+                        "web_url": "http://localhost:8080",
+                        "mobile_web_url": "http://localhost:8080"
+                    }
+                }
+            """.formatted(message);
+    }
+
+    @Override
+    public void sendTextMessage(String templateJson) {
+        var url = kapiHost + "/v2/api/talk/memo/default/send";
+
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("template_object", templateJson);
+
+        try {
+            restClient.post()
+                .uri(url)
+                .headers(headers -> headers.setBearerAuth(getAccessToken()))
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .body(body)
+                .retrieve()
+                .body(Void.class);
+
+        } catch (RestClientException e) {
+            throw new RuntimeException("카카오 메시지 전송 중 오류 발생");
+        }
+    }
+
 }
