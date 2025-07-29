@@ -1,5 +1,6 @@
 package gift.kakao.controller;
 
+import gift.kakao.service.KakaoMessageService;
 import gift.kakao.service.OAuthService;
 import java.util.Map;
 import org.springframework.http.ResponseEntity;
@@ -12,9 +13,12 @@ import org.springframework.web.servlet.view.RedirectView;
 public class KakaoOAuthController {
 
     private final OAuthService kakaoOAuthService;
+    private final KakaoMessageService kakaoMessageService;
 
-    public KakaoOAuthController(OAuthService kakaoOAuthService) {
+    public KakaoOAuthController(OAuthService kakaoOAuthService,
+        KakaoMessageService kakaoMessageService) {
         this.kakaoOAuthService = kakaoOAuthService;
+        this.kakaoMessageService = kakaoMessageService;
     }
 
     // authorize?scope=talk_message
@@ -35,5 +39,14 @@ public class KakaoOAuthController {
         Map<String, Object> profile = kakaoOAuthService.getUserProfile();
 
         return ResponseEntity.ok(true);
+    }
+
+    @GetMapping("/message")
+    public ResponseEntity<?> sendTextMessage() {
+        String message = "default";
+        
+        String templateJson = kakaoMessageService.createTextMessage(message);
+        kakaoMessageService.sendTextMessage(templateJson);
+        return ResponseEntity.ok().build();
     }
 }
