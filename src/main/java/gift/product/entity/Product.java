@@ -43,6 +43,10 @@ public class Product {
 
     }
 
+    public Product(String name) {
+        this(null, name, null, null, null, null);
+    }
+
     public Product(String name, Double price, String imageUrl, Boolean mdConfirmed) {
         this(null, name, price, imageUrl, mdConfirmed, null);
     }
