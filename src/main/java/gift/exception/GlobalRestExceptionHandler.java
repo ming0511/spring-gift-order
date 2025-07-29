@@ -26,7 +26,7 @@ public class GlobalRestExceptionHandler {
     @ExceptionHandler({ProductNotFoundException.class, MemberNotFoundException.class,
         WishNotFoundException.class, OptionNotFoundException.class})
     public ResponseEntity<String> handleNotFoundException(RuntimeException ex) {
-        return new ResponseEntity<>("오류: " + ex.getMessage(), HttpStatus.NOT_FOUND);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("오류: " + ex.getMessage());
     }
 
     // 400
@@ -34,25 +34,25 @@ public class GlobalRestExceptionHandler {
     @ExceptionHandler({UnapprovedProductException.class, EmailAlreadyExistsException.class,
         InvalidPageException.class})
     public ResponseEntity<String> handleBadRequestException(RuntimeException ex) {
-        return new ResponseEntity<>("오류: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("오류: " + ex.getMessage());
     }
 
     // 400 입력 값 검증 실패 - 옵션 이름 중복, 잘못된 옵션 ID
     @ExceptionHandler({DuplicateOptionNameException.class, ProductMismatchException.class})
     public ResponseEntity<String> handleDuplicateOptionNameException(RuntimeException ex) {
-        return new ResponseEntity<>("오류: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("오류: " + ex.getMessage());
     }
 
     // 400 재고 부족
     @ExceptionHandler(OutOfStockException.class)
     public ResponseEntity<String> handleOutOfStockException(RuntimeException ex) {
-        return new ResponseEntity<>("오류: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("오류: " + ex.getMessage());
     }
 
     // 401 인증 실패
     @ExceptionHandler({InvalidAuthorizationException.class, InvalidTokenException.class})
     public ResponseEntity<String> handleUnauthorizedException(RuntimeException ex) {
-        return new ResponseEntity<>("오류: " + ex.getMessage(), HttpStatus.UNAUTHORIZED);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("오류: " + ex.getMessage());
     }
 
     // 403
@@ -60,13 +60,13 @@ public class GlobalRestExceptionHandler {
     // (비밀번호 찾기, 비밀번호 변경 요청)
     @ExceptionHandler(LoginFailedException.class)
     public ResponseEntity<String> handleLoginForbiddenException(RuntimeException ex) {
-        return new ResponseEntity<>("오류: " + ex.getMessage(), HttpStatus.FORBIDDEN);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("오류: " + ex.getMessage());
     }
 
     // 403 권한 없음
     @ExceptionHandler(WishlistAccessDeniedException.class)
     public ResponseEntity<String> handleForbiddenException(RuntimeException ex) {
-        return new ResponseEntity<>("오류: " + ex.getMessage(), HttpStatus.FORBIDDEN);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("오류: " + ex.getMessage());
     }
 
     // 500
