@@ -13,11 +13,13 @@ public record KakaoUserProfile(
     KakaoAccount kakaoAccount
 ) {
 
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public record KakaoAccount(
         String email,
         Profile profile
     ) {
 
+        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
         public record Profile(
             String nickname,
             String profileImageUrl
