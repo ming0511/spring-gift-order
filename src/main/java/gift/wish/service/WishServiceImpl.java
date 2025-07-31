@@ -1,11 +1,10 @@
 package gift.wish.service;
 
-import gift.exception.member.MemberNotFoundException;
 import gift.exception.wish.InvalidPageException;
 import gift.exception.wish.WishNotFoundException;
 import gift.exception.wish.WishlistAccessDeniedException;
 import gift.member.entity.Member;
-import gift.member.repository.MemberRepository;
+import gift.member.service.MemberService;
 import gift.product.entity.Product;
 import gift.product.service.ProductService;
 import gift.wish.dto.WishCreateCommand;
@@ -29,16 +28,16 @@ public class WishServiceImpl implements WishService {
 
     // Service
     private final ProductService productService;
+    private final MemberService memberService;
 
     // Repository
     private final WishRepository wishRepository;
-    private final MemberRepository memberRepository;
 
-    public WishServiceImpl(ProductService productService, WishRepository wishRepository,
-        MemberRepository memberRepository) {
+    public WishServiceImpl(ProductService productService, MemberService memberService,
+        WishRepository wishRepository) {
         this.productService = productService;
+        this.memberService = memberService;
         this.wishRepository = wishRepository;
-        this.memberRepository = memberRepository;
     }
 
     @Override
@@ -52,9 +51,7 @@ public class WishServiceImpl implements WishService {
             throw new IllegalStateException("이미 위시리스트에 추가하셨습니다.");
         }
 
-        Member member = memberRepository.findById(memberId).orElseThrow(
-            () -> new MemberNotFoundException("회원이 존재하지 않습니다. memberId =" + memberId)
-        );
+        Member member = memberService.findMemberById(memberId);
 
         Product product = productService.findProductById(productId);
 
