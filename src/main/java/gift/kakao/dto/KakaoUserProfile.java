@@ -1,32 +1,25 @@
 package gift.kakao.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record KakaoUserProfile(
     @JsonIgnore
     Long id,
 
-    @JsonProperty("connected_at")
     String connectedAt,
-
-    @JsonProperty("kakao_account")
     KakaoAccount kakaoAccount
 ) {
 
     public record KakaoAccount(
-        @JsonProperty("email")
         String email,
-
-        @JsonProperty("profile")
         Profile profile
     ) {
 
         public record Profile(
-            @JsonProperty("nickname")
             String nickname,
-
-            @JsonProperty("profile_image_url")
             String profileImageUrl
         ) {
 
