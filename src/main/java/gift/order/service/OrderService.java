@@ -1,7 +1,7 @@
 package gift.order.service;
 
 import gift.exception.option.OptionNotFoundException;
-import gift.kakao.service.KakaoMessageService;
+import gift.kakao.service.MessageService;
 import gift.option.entity.Option;
 import gift.option.repository.OptionRepository;
 import gift.option.service.OptionService;
@@ -18,14 +18,14 @@ public class OrderService {
 
     // Service
     private final OptionService optionService;
-    private final KakaoMessageService kakaoMessageService;
+    private final MessageService kakaoMessageService;
 
     // Repository
     private final WishRepository wishRepository;
     private final OptionRepository optionRepository;
     private final OrderRepository orderRepository;
 
-    public OrderService(OptionService optionService, KakaoMessageService kakaoMessageService,
+    public OrderService(OptionService optionService, MessageService kakaoMessageService,
         WishRepository wishRepository, OptionRepository optionRepository,
         OrderRepository orderRepository) {
         this.optionService = optionService;

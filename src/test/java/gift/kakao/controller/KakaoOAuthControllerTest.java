@@ -12,7 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import gift.kakao.dto.KakaoMessageRequestDto;
 import gift.kakao.dto.KakaoUserProfile;
-import gift.kakao.service.KakaoMessageService;
+import gift.kakao.service.MessageService;
 import gift.kakao.service.OAuthService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,7 @@ class KakaoOAuthControllerTest {
     private OAuthService kakaoOAuthService;
 
     @MockBean
-    private KakaoMessageService kakaoMessageService;
+    private MessageService kakaoMessageService;
 
     @Test
     void authorize() throws Exception {

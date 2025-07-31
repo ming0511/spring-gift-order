@@ -2,7 +2,7 @@ package gift.kakao.controller;
 
 import gift.kakao.dto.KakaoMessageRequestDto;
 import gift.kakao.dto.KakaoUserProfile;
-import gift.kakao.service.KakaoMessageService;
+import gift.kakao.service.MessageService;
 import gift.kakao.service.OAuthService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +17,10 @@ import org.springframework.web.servlet.view.RedirectView;
 public class KakaoOAuthController {
 
     private final OAuthService kakaoOAuthService;
-    private final KakaoMessageService kakaoMessageService;
+    private final MessageService kakaoMessageService;
 
     public KakaoOAuthController(OAuthService kakaoOAuthService,
-        KakaoMessageService kakaoMessageService) {
+        MessageService kakaoMessageService) {
         this.kakaoOAuthService = kakaoOAuthService;
         this.kakaoMessageService = kakaoMessageService;
     }

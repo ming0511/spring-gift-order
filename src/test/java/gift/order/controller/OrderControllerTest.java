@@ -5,7 +5,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 
-import gift.kakao.service.KakaoMessageService;
+import gift.kakao.service.MessageService;
 import gift.kakao.service.OAuthService;
 import gift.member.Role;
 import gift.member.builder.MemberBuilder;
@@ -64,7 +64,7 @@ class OrderControllerTest {
     private OAuthService oAuthService;
 
     @MockBean
-    private KakaoMessageService kakaoMessageService;
+    private MessageService kakaoMessageService;
 
 
     private String userToken;

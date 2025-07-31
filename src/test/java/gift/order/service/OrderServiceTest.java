@@ -9,7 +9,7 @@ import static org.mockito.Mockito.when;
 
 import gift.exception.option.OptionNotFoundException;
 import gift.exception.order.OutOfStockException;
-import gift.kakao.service.KakaoMessageService;
+import gift.kakao.service.MessageService;
 import gift.option.entity.Option;
 import gift.option.repository.OptionRepository;
 import gift.option.service.OptionService;
@@ -35,7 +35,7 @@ class OrderServiceTest {
     @Mock
     private OptionService optionService;
     @Mock
-    private KakaoMessageService kakaoMessageService;
+    private MessageService kakaoMessageService;
     @Mock
     private WishRepository wishRepository;
 

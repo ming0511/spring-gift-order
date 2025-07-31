@@ -25,7 +25,7 @@ class KakaoOAuthServiceTest {
     private OAuthService kakaoOAuthService;
 
     @Autowired
-    private KakaoMessageService kakaoMessageService;
+    private MessageService kakaoMessageService;
 
     @Value("${kakao.client-id}")
     private String clientId;
