@@ -1,10 +1,12 @@
 package gift.kakao.service;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 
@@ -57,6 +59,22 @@ public class KakaoMessageService implements MessageService {
                 .body(body)
                 .retrieve()
                 .body(Void.class);
+
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+                kakaoOAuthService.refreshAccessToken();
+
+                restClient.post()
+                    .uri(url)
+                    .headers(
+                        headers -> headers.setBearerAuth(kakaoOAuthService.provideAccessToken()))
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                    .body(body)
+                    .retrieve()
+                    .body(Void.class);
+            }
+
+            throw e;
 
         } catch (RestClientException e) {
             throw new RuntimeException("카카오 메시지 전송 중 오류 발생");
