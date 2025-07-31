@@ -7,7 +7,7 @@ import gift.order.dto.OrderCreateCommand;
 import gift.order.entity.Order;
 import gift.order.repository.OrderRepository;
 import gift.product.entity.Product;
-import gift.wish.repository.WishRepository;
+import gift.wish.service.WishService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,18 +15,18 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderService {
 
     // Service
+    private final WishService wishService;
     private final OptionService optionService;
     private final MessageService kakaoMessageService;
 
     // Repository
-    private final WishRepository wishRepository;
     private final OrderRepository orderRepository;
 
-    public OrderService(OptionService optionService, MessageService kakaoMessageService,
-        WishRepository wishRepository, OrderRepository orderRepository) {
+    public OrderService(WishService wishService, OptionService optionService,
+        MessageService kakaoMessageService, OrderRepository orderRepository) {
+        this.wishService = wishService;
         this.optionService = optionService;
         this.kakaoMessageService = kakaoMessageService;
-        this.wishRepository = wishRepository;
         this.orderRepository = orderRepository;
     }
 
@@ -39,8 +39,8 @@ public class OrderService {
         optionService.subtractOptionQuantity(option.getOptionId(), dto.quantity());
 
         Product product = option.getProduct();
-        wishRepository.deleteByMember_MemberIdAndProduct_ProductId(memberId,
-            product.getProductId());
+
+        wishService.deleteWishByMemberIdAndProductId(memberId, product.getProductId());
 
         Order savedOrder = orderRepository.save(order);
 
