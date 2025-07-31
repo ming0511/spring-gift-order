@@ -5,6 +5,7 @@ import gift.member.dto.MemberCreateCommand;
 import gift.member.dto.MemberUpdateCommand;
 import gift.member.dto.RegisterCommand;
 import gift.member.dto.TokenResponseDto;
+import gift.member.entity.Member;
 import java.util.List;
 
 public interface MemberService {
@@ -17,7 +18,7 @@ public interface MemberService {
 
     List<AdminMemberGetResponseDto> findAllMembers();
 
-    AdminMemberGetResponseDto findMemberById(Long memberId);
+    Member findMemberById(Long memberId);
 
     void updateMember(Long memberId, MemberUpdateCommand dto);
 
