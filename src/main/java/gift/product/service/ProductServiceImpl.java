@@ -74,6 +74,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Product findProductWithOptionsById(Long productId) {
+        return productRepository.findWithOptionsById(productId)
+            .orElseThrow(() -> new ProductNotFoundException("해당 상품을 찾을 수 없습니다."));
+    }
+
+    @Override
     @Transactional
     public void updateProduct(Long productId, ProductUpdateCommand dto) {
         Boolean mdConfirmed = dto.name().contains("카카오") ? dto.mdConfirmed() : false;
