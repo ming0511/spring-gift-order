@@ -1,9 +1,10 @@
 package gift.kakao.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record KakaoUserProfile(
-    @JsonProperty("id")
+    @JsonIgnore
     Long id,
 
     @JsonProperty("connected_at")
