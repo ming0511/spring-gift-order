@@ -42,7 +42,7 @@ public class KakaoOAuthController {
     public ResponseEntity<?> getProfile() {
         KakaoUserProfile profile = kakaoOAuthService.getUserProfile();
 
-        return ResponseEntity.ok(true);
+        return ResponseEntity.ok(profile);
     }
 
     @PostMapping("/message")
