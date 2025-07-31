@@ -1,7 +1,6 @@
 package gift.product.service;
 
 import gift.product.dto.ProductCreateCommand;
-import gift.product.dto.ProductGetResponseDto;
 import gift.product.dto.ProductPageResponseDto;
 import gift.product.dto.ProductUpdateCommand;
 import gift.product.entity.Product;
@@ -13,7 +12,9 @@ public interface ProductService {
 
     ProductPageResponseDto findAllProducts(Pageable pageable);
 
-    ProductGetResponseDto findProductById(Long productId);
+    Product findProductById(Long productId);
+
+    Product findProductWithOptionsById(Long productId);
 
     void updateProduct(Long productId, ProductUpdateCommand dto);
 

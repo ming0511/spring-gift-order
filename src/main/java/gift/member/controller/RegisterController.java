@@ -31,6 +31,6 @@ public class RegisterController {
 
         TokenResponseDto responseDto = memberService.registerMember(dto);
 
-        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 }

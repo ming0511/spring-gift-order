@@ -1,6 +1,7 @@
 package gift.option.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import gift.exception.order.OutOfStockException;
 import gift.option.OptionNameConverter;
 import gift.product.entity.Product;
 import jakarta.persistence.Column;
@@ -36,6 +37,14 @@ public class Option {
     private Product product;
 
     protected Option() {
+    }
+
+    public Option(Integer quantity) {
+        this(null, null, quantity, null);
+    }
+
+    public Option(Integer quantity, Product product) {
+        this(null, null, quantity, product);
     }
 
     public Option(OptionName name, Integer quantity) {
@@ -90,7 +99,7 @@ public class Option {
             throw new IllegalArgumentException("차감량은 0보다 커야 합니다.");
         }
         if (quantity < amount) {
-            throw new IllegalArgumentException("옵션 수량이 부족합니다.");
+            throw new OutOfStockException("재고가 부족합니다.");
         }
         this.quantity -= amount;
     }

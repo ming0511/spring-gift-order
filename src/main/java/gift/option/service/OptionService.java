@@ -11,6 +11,8 @@ public interface OptionService {
 
     Set<Option> getProductOptions(Long productId);
 
+    Option getOption(Long optionId);
+
     void updateProductOption(Long productId, OptionUpdateCommand dto);
 
     void deleteProductOption(Long productId, Long optionId);

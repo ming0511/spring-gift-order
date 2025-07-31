@@ -5,7 +5,6 @@ import gift.member.dto.LoginRequestDto;
 import gift.member.dto.TokenResponseDto;
 import gift.member.service.LoginService;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,6 +29,6 @@ public class LoginController {
 
         TokenResponseDto responseDto = loginService.login(dto);
 
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        return ResponseEntity.ok(responseDto);
     }
 }

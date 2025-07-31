@@ -76,12 +76,9 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public AdminMemberGetResponseDto findMemberById(Long memberId) {
-        Member member = memberRepository.findById(memberId)
+    public Member findMemberById(Long memberId) {
+        return memberRepository.findById(memberId)
             .orElseThrow(() -> new MemberNotFoundException("존재하지 않는 회원입니다."));
-
-        return new AdminMemberGetResponseDto(member.getMemberId(), member.getEmail(),
-            member.getPassword(), member.getName(), member.getRole());
     }
 
     @Override

@@ -13,4 +13,5 @@ public interface WishService {
 
     void deleteWish(Long memberId, Long wishId);
 
+    void deleteWishByMemberIdAndProductId(Long memberId, Long productId);
 }

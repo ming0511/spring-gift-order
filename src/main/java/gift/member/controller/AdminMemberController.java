@@ -5,6 +5,7 @@ import gift.member.dto.AdminMemberGetResponseDto;
 import gift.member.dto.AdminMemberUpdateRequestDto;
 import gift.member.dto.MemberCreateCommand;
 import gift.member.dto.MemberUpdateCommand;
+import gift.member.entity.Member;
 import gift.member.service.MemberService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -70,8 +71,11 @@ public class AdminMemberController {
     public String getMemberById(@RequestParam Long memberId, Model model) {
 
         try {
-            AdminMemberGetResponseDto member = memberService.findMemberById(memberId);
-            model.addAttribute("members", List.of(member));
+            Member member = memberService.findMemberById(memberId);
+            AdminMemberGetResponseDto responseDto = new AdminMemberGetResponseDto(
+                member.getMemberId(), member.getEmail(),
+                member.getPassword(), member.getName(), member.getRole());
+            model.addAttribute("members", List.of(responseDto));
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
         }
@@ -84,8 +88,11 @@ public class AdminMemberController {
     public String updateMemberPage(@PathVariable Long memberId, Model model) {
 
         try {
-            AdminMemberGetResponseDto member = memberService.findMemberById(memberId);
-            model.addAttribute("member", member);
+            Member member = memberService.findMemberById(memberId);
+            AdminMemberGetResponseDto responseDto = new AdminMemberGetResponseDto(
+                member.getMemberId(), member.getEmail(),
+                member.getPassword(), member.getName(), member.getRole());
+            model.addAttribute("member", responseDto);
             return "member/update-member";
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());

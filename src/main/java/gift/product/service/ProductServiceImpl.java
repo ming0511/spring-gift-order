@@ -66,12 +66,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductGetResponseDto findProductById(Long productId) {
-        Product product = productRepository.findById(productId)
+    public Product findProductById(Long productId) {
+        return productRepository.findById(productId)
             .orElseThrow(() -> new ProductNotFoundException("존재하지 않는 상품입니다."));
+    }
 
-        return new ProductGetResponseDto(product.getProductId(), product.getName(),
-            product.getPrice(), product.getImageUrl(), product.getMdConfirmed());
+    @Override
+    public Product findProductWithOptionsById(Long productId) {
+        return productRepository.findWithOptionsById(productId)
+            .orElseThrow(() -> new ProductNotFoundException("해당 상품을 찾을 수 없습니다."));
     }
 
     @Override

@@ -1,17 +1,25 @@
 package gift.kakao.controller;
 
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import gift.kakao.dto.KakaoMessageRequestDto;
+import gift.kakao.dto.KakaoUserProfile;
+import gift.kakao.service.MessageService;
 import gift.kakao.service.OAuthService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -26,6 +34,9 @@ class KakaoOAuthControllerTest {
 
     @MockBean
     private OAuthService kakaoOAuthService;
+
+    @MockBean
+    private MessageService kakaoMessageService;
 
     @Test
     void authorize() throws Exception {
@@ -63,9 +74,31 @@ class KakaoOAuthControllerTest {
 
     @Test
     void getProfile() throws Exception {
+        KakaoUserProfile.KakaoAccount.Profile profile = new KakaoUserProfile.KakaoAccount.Profile(
+            "테스트유저",
+            "http://example.com/profile.jpg"
+        );
+
+        KakaoUserProfile.KakaoAccount kakaoAccount = new KakaoUserProfile.KakaoAccount(
+            "test@example.com",
+            profile
+        );
+
+        KakaoUserProfile mockProfile = new KakaoUserProfile(
+            123456789L,
+            "2025-07-31T00:00:00Z",
+            kakaoAccount
+        );
+
+        when(kakaoOAuthService.getUserProfile()).thenReturn(mockProfile);
+
         mockMvc.perform(get("/profile"))
             .andExpect(status().isOk())
-            .andExpect(content().string("true"));
+            .andExpect(jsonPath("$.id").doesNotExist())
+            .andExpect(jsonPath("$.connected_at").exists())
+            .andExpect(jsonPath("$.kakao_account.email").exists())
+            .andExpect(jsonPath("$.kakao_account.profile.nickname").exists())
+            .andExpect(jsonPath("$.kakao_account.profile.profile_image_url").exists());
     }
 
     @Test
@@ -75,6 +108,55 @@ class KakaoOAuthControllerTest {
 
         mockMvc.perform(get("/profile"))
             .andExpect(status().is5xxServerError());
+    }
+
+    @Test
+    void sendTextMessage() throws Exception {
+        KakaoMessageRequestDto requestDto = new KakaoMessageRequestDto("default");
+
+        String mockTemplateJson = """
+                {
+                  "object_type": "text",
+                  "text": "default",
+                  "link": {
+                    "web_url": "http://localhost:8080",
+                    "mobile_web_url": "http://localhost:8080"
+                  }
+                }
+            """;
+
+        when(kakaoMessageService.createTextMessage("default")).thenReturn(mockTemplateJson);
+        doNothing().when(kakaoMessageService).sendTextMessage(mockTemplateJson);
+
+        // when & then
+        mockMvc.perform(post("/message")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                          "message": "default"
+                        }
+                    """))
+            .andExpect(status().isOk());
+
+        // verify internal calls
+        verify(kakaoMessageService).createTextMessage("default");
+        verify(kakaoMessageService).sendTextMessage(mockTemplateJson);
+    }
+
+    @Test
+    void sendTextMessage_BAD_REQEUST() throws Exception {
+        String longMessage = "a".repeat(201);
+        String jsonRequest = String.format("""
+            {
+              "message": "%s"
+            }
+            """, longMessage);
+
+        // when & then
+        mockMvc.perform(post("/message")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonRequest))
+            .andExpect(status().isBadRequest());
     }
 
 
