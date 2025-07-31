@@ -51,6 +51,14 @@ public class OptionServiceImpl implements OptionService {
     }
 
     @Override
+    public Option getOption(Long optionId) {
+        Option option = optionRepository.findById(optionId)
+            .orElseThrow(() -> new OptionNotFoundException("해당 옵션을 찾을 수 없습니다."));
+
+        return option;
+    }
+
+    @Override
     @Transactional
     public void updateProductOption(Long productId, OptionUpdateCommand dto) {
 
