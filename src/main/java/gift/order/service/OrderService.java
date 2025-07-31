@@ -17,22 +17,25 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class OrderService {
 
-    private final OrderRepository orderRepository;
-    private final OptionRepository optionRepository;
-
+    // Service
     private final OptionService optionService;
     private final KakaoMessageService kakaoMessageService;
-    private final WishRepository wishRepository;
 
-    public OrderService(OrderRepository orderRepository, OptionRepository optionRepository,
-        OptionService optionService, KakaoMessageService kakaoMessageService,
-        WishRepository wishRepository) {
-        this.orderRepository = orderRepository;
-        this.optionRepository = optionRepository;
+    // Repository
+    private final WishRepository wishRepository;
+    private final OptionRepository optionRepository;
+    private final OrderRepository orderRepository;
+
+    public OrderService(OptionService optionService, KakaoMessageService kakaoMessageService,
+        WishRepository wishRepository, OptionRepository optionRepository,
+        OrderRepository orderRepository) {
         this.optionService = optionService;
         this.kakaoMessageService = kakaoMessageService;
         this.wishRepository = wishRepository;
+        this.optionRepository = optionRepository;
+        this.orderRepository = orderRepository;
     }
+
 
     @Transactional
     public Order createOrder(Long memberId, OrderCreateCommand dto) {
