@@ -1,9 +1,7 @@
 package gift.order.service;
 
-import gift.exception.option.OptionNotFoundException;
 import gift.kakao.service.MessageService;
 import gift.option.entity.Option;
-import gift.option.repository.OptionRepository;
 import gift.option.service.OptionService;
 import gift.order.dto.OrderCreateCommand;
 import gift.order.entity.Order;
@@ -22,24 +20,19 @@ public class OrderService {
 
     // Repository
     private final WishRepository wishRepository;
-    private final OptionRepository optionRepository;
     private final OrderRepository orderRepository;
 
     public OrderService(OptionService optionService, MessageService kakaoMessageService,
-        WishRepository wishRepository, OptionRepository optionRepository,
-        OrderRepository orderRepository) {
+        WishRepository wishRepository, OrderRepository orderRepository) {
         this.optionService = optionService;
         this.kakaoMessageService = kakaoMessageService;
         this.wishRepository = wishRepository;
-        this.optionRepository = optionRepository;
         this.orderRepository = orderRepository;
     }
 
-
     @Transactional
     public Order createOrder(Long memberId, OrderCreateCommand dto) {
-        Option option = optionRepository.findById(dto.optionId())
-            .orElseThrow(() -> new OptionNotFoundException("해당 옵션을 찾을 수 없습니다."));
+        Option option = optionService.getOption(dto.optionId());
 
         Order order = new Order(option, dto.quantity(), dto.message());
 
