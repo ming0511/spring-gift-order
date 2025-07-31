@@ -1,7 +1,6 @@
 package gift.order.service;
 
 import gift.exception.option.OptionNotFoundException;
-import gift.exception.order.OutOfStockException;
 import gift.kakao.service.KakaoMessageService;
 import gift.option.entity.Option;
 import gift.option.repository.OptionRepository;
@@ -41,10 +40,6 @@ public class OrderService {
     public Order createOrder(Long memberId, OrderCreateCommand dto) {
         Option option = optionRepository.findById(dto.optionId())
             .orElseThrow(() -> new OptionNotFoundException("해당 옵션을 찾을 수 없습니다."));
-
-        if (option.getQuantity() < dto.quantity()) {
-            throw new OutOfStockException("재고가 부족합니다.");
-        }
 
         Order order = new Order(option, dto.quantity(), dto.message());
 
