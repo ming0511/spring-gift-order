@@ -3,14 +3,13 @@ package gift.option.service;
 import gift.exception.option.DuplicateOptionNameException;
 import gift.exception.option.OptionNotFoundException;
 import gift.exception.product.ProductMismatchException;
-import gift.exception.product.ProductNotFoundException;
 import gift.option.dto.OptionCreateCommand;
 import gift.option.dto.OptionUpdateCommand;
 import gift.option.entity.Option;
 import gift.option.entity.OptionName;
 import gift.option.repository.OptionRepository;
 import gift.product.entity.Product;
-import gift.product.repository.ProductRepository;
+import gift.product.service.ProductService;
 import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,20 +17,22 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class OptionServiceImpl implements OptionService {
 
-    private final OptionRepository optionRepository;
-    private final ProductRepository productRepository;
+    // Service
+    private final ProductService productService;
 
-    public OptionServiceImpl(OptionRepository optionRepository,
-        ProductRepository productRepository) {
+    // Repository
+    private final OptionRepository optionRepository;
+
+    public OptionServiceImpl(ProductService productService, OptionRepository optionRepository) {
+        this.productService = productService;
         this.optionRepository = optionRepository;
-        this.productRepository = productRepository;
     }
 
     @Override
     @Transactional
     public Option addProductOption(Long productId, OptionCreateCommand dto) {
-        Product product = productRepository.findById(productId)
-            .orElseThrow(() -> new ProductNotFoundException("해당 상품을 찾을 수 없습니다."));
+
+        Product product = productService.findProductById(productId);
 
         checkDuplicateOptionName(productId, dto.name());
 
@@ -44,8 +45,7 @@ public class OptionServiceImpl implements OptionService {
 
     @Override
     public Set<Option> getProductOptions(Long productId) {
-        Product product = productRepository.findById(productId)
-            .orElseThrow(() -> new ProductNotFoundException("해당 상품을 찾을 수 없습니다."));
+        Product product = productService.findProductById(productId);
 
         return product.getOptions();
     }
@@ -104,8 +104,8 @@ public class OptionServiceImpl implements OptionService {
     }
 
     public void checkDuplicateOptionName(Long productId, OptionName optionName) {
-        Product product = productRepository.findWithOptionsById(productId)
-            .orElseThrow(() -> new ProductNotFoundException("해당 상품을 찾을 수 없습니다."));
+
+        Product product = productService.findProductWithOptionsById(productId);
 
         boolean exists = product.getOptions().stream()
             .anyMatch(option -> option.getName().equals(optionName));
