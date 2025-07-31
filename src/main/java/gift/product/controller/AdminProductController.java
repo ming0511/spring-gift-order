@@ -8,6 +8,7 @@ import gift.product.dto.ProductGetResponseDto;
 import gift.product.dto.ProductPageResponseDto;
 import gift.product.dto.ProductUpdateCommand;
 import gift.product.dto.ProductUpdateRequestDto;
+import gift.product.entity.Product;
 import gift.product.service.ProductService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -86,8 +87,11 @@ public class AdminProductController {
     public String getProductById(@RequestParam Long productId, Model model) {
 
         try {
-            ProductGetResponseDto product = productService.findProductById(productId);
-            model.addAttribute("products", List.of(product));
+            Product product = productService.findProductById(productId);
+            ProductGetResponseDto responseDto = new ProductGetResponseDto(product.getProductId(),
+                product.getName(),
+                product.getPrice(), product.getImageUrl(), product.getMdConfirmed());
+            model.addAttribute("products", List.of(responseDto));
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
         }
@@ -99,8 +103,11 @@ public class AdminProductController {
     public String updateProductPage(@PathVariable Long productId, Model model) {
 
         try {
-            ProductGetResponseDto product = productService.findProductById(productId);
-            model.addAttribute("product", product);
+            Product product = productService.findProductById(productId);
+            ProductGetResponseDto responseDto = new ProductGetResponseDto(product.getProductId(),
+                product.getName(),
+                product.getPrice(), product.getImageUrl(), product.getMdConfirmed());
+            model.addAttribute("product", responseDto);
             return "product/update-product";
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
