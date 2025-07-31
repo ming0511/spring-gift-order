@@ -1,10 +1,14 @@
 package gift.kakao.controller;
 
+import gift.kakao.dto.KakaoMessageRequestDto;
 import gift.kakao.dto.KakaoUserProfile;
 import gift.kakao.service.KakaoMessageService;
 import gift.kakao.service.OAuthService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
@@ -41,12 +45,15 @@ public class KakaoOAuthController {
         return ResponseEntity.ok(true);
     }
 
-    @GetMapping("/message")
-    public ResponseEntity<?> sendTextMessage() {
-        String message = "default";
+    @PostMapping("/message")
+    public ResponseEntity<?> sendTextMessage(
+        @Valid @RequestBody KakaoMessageRequestDto requestDto) {
+
+        String message = requestDto.message();
 
         String templateJson = kakaoMessageService.createTextMessage(message);
         kakaoMessageService.sendTextMessage(templateJson);
+
         return ResponseEntity.ok().build();
     }
 }
