@@ -1,4 +1,4 @@
-package gift.wish.config;
+package gift.config;
 
 import gift.wish.argumentresolver.LoginMemberArgumentResolver;
 import java.util.List;
@@ -7,11 +7,11 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class WebConfig implements WebMvcConfigurer {
+public class ArgumentResolverConfig implements WebMvcConfigurer {
 
     private final LoginMemberArgumentResolver loginMemberArgumentResolver;
 
-    public WebConfig(LoginMemberArgumentResolver loginMemberArgumentResolver) {
+    public ArgumentResolverConfig(LoginMemberArgumentResolver loginMemberArgumentResolver) {
         this.loginMemberArgumentResolver = loginMemberArgumentResolver;
     }
 

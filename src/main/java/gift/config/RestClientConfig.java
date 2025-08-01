@@ -1,4 +1,4 @@
-package gift.kakao.config;
+package gift.config;
 
 import java.time.Duration;
 import org.springframework.context.annotation.Bean;
