@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -11,14 +12,12 @@ import gift.exception.option.OptionNotFoundException;
 import gift.exception.order.OutOfStockException;
 import gift.kakao.service.MessageService;
 import gift.option.entity.Option;
-import gift.option.repository.OptionRepository;
 import gift.option.service.OptionService;
 import gift.order.dto.OrderCreateCommand;
 import gift.order.entity.Order;
 import gift.order.repository.OrderRepository;
 import gift.product.entity.Product;
-import gift.wish.repository.WishRepository;
-import java.util.Optional;
+import gift.wish.service.WishService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -30,14 +29,15 @@ class OrderServiceTest {
 
     @Mock
     private OrderRepository orderRepository;
-    @Mock
-    private OptionRepository optionRepository;
+
     @Mock
     private OptionService optionService;
+
     @Mock
     private MessageService kakaoMessageService;
+
     @Mock
-    private WishRepository wishRepository;
+    private WishService wishService;
 
     @InjectMocks
     private OrderService orderService;
@@ -55,12 +55,11 @@ class OrderServiceTest {
         String message = "주문 메시지";
 
         Product product = new Product("기본 상품");
-
         Option option = new Option(10, product);
 
         OrderCreateCommand dto = new OrderCreateCommand(option.getOptionId(), quantity, message);
 
-        when(optionRepository.findById(option.getOptionId())).thenReturn(Optional.of(option));
+        when(optionService.getOption(option.getOptionId())).thenReturn(option);
         when(orderRepository.save(any(Order.class))).thenAnswer(
             invocation -> invocation.getArgument(0));
         when(kakaoMessageService.createTextMessage(message)).thenReturn(
@@ -72,10 +71,11 @@ class OrderServiceTest {
         // then
         assertNotNull(order);
         assertEquals(quantity, order.getQuantity());
+
         verify(optionService).subtractOptionQuantity(option.getOptionId(), quantity);
-        verify(wishRepository).deleteByMember_MemberIdAndProduct_ProductId(memberId,
-            product.getProductId());
+        verify(wishService).deleteWishByMemberIdAndProductId(memberId, product.getProductId());
         verify(kakaoMessageService).sendTextMessage("{\"object_type\":\"text\"}");
+        verify(orderRepository).save(any(Order.class));
     }
 
     @Test
@@ -84,26 +84,26 @@ class OrderServiceTest {
         Long optionId = 100L;
         OrderCreateCommand dto = new OrderCreateCommand(optionId, 1, "msg");
 
-        when(optionRepository.findById(optionId)).thenReturn(Optional.empty());
+        when(optionService.getOption(optionId)).thenThrow(
+            new OptionNotFoundException("해당 옵션을 찾을 수 없습니다."));
 
         // when & then
-        assertThrows(OptionNotFoundException.class, () -> {
-            orderService.createOrder(1L, dto);
-        });
+        assertThrows(OptionNotFoundException.class, () -> orderService.createOrder(1L, dto));
     }
 
     @Test
     void createOrder_OutOfStock() {
         // given
-        Option option = new Option(1);
+        Product product = new Product("테스트 상품");
+        Option option = new Option(1, product);
 
         OrderCreateCommand dto = new OrderCreateCommand(option.getOptionId(), 2, "msg");
 
-        when(optionRepository.findById(option.getOptionId())).thenReturn(Optional.of(option));
+        when(optionService.getOption(option.getOptionId())).thenReturn(option);
+        doThrow(new OutOfStockException("재고 부족")).when(optionService)
+            .subtractOptionQuantity(option.getOptionId(), dto.quantity());
 
         // when & then
-        assertThrows(OutOfStockException.class, () -> {
-            orderService.createOrder(1L, dto);
-        });
+        assertThrows(OutOfStockException.class, () -> orderService.createOrder(1L, dto));
     }
 }
