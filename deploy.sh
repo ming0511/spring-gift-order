@@ -21,8 +21,7 @@ fi
 
 cd "$CLONE_DIR"
 git fetch origin
-git checkout step3 || git checkout -b step3 origin/step3
-git pull origin step3
+git reset --hard origin/step3
 
 echo "🛠️ 빌드 시작..."
 ./gradlew clean build -x test
