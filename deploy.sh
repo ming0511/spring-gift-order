@@ -1,16 +1,4 @@
 #!/bin/bash
-<<<<<<< HEAD
-
-PROJECT_ROOT=$(pwd)
-
-git checkout step
-
-./gradlew clean build
-
-BUILD_PATH=$(ls ${PROJECT_ROOT}/build/libs/*.jar)
-JAR_NAME=$(basename $BUILD_PATH)
-=======
->>>>>>> 7f2ef0b (refactor: 배포 스크립트 수정)
 
 # Java 설치 여부 확인 및 설치
 if ! command -v java >/dev/null 2>&1; then
@@ -64,15 +52,6 @@ else
   sleep 5
 fi
 
-<<<<<<< HEAD
-DEPLOY_PATH=~/deploy/spring-gift-order
-
-cp $BUILD_PATH $DEPLOY_PATH
-cd $DEPLOY_PATH
-
-DEPLOY_JAR=$DEPLOY_PATH/$JAR_NAME
-nohup java -jar $DEPLOY_JAR > /dev/null 2> /dev/null < /dev/null &
-=======
 mkdir -p "$DEPLOY_PATH"
 cp "$BUILD_PATH" "$DEPLOY_PATH"
 cd "$DEPLOY_PATH"
@@ -83,4 +62,3 @@ echo "🚀 애플리케이션 실행 시작..."
 nohup java -jar "$DEPLOY_JAR" > deploy.log 2>&1 < /dev/null &
 
 echo "🎉 배포 완료: $DEPLOY_JAR"
->>>>>>> 7f2ef0b (refactor: 배포 스크립트 수정)
