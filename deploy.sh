@@ -39,6 +39,11 @@ git pull origin step3
 echo "🛠️ 빌드 시작..."
 ./gradlew clean build -x test
 
+if [ $? -ne 0 ]; then
+  echo "❌ 빌드 실패, 스크립트 종료."
+  exit 1
+fi
+
 BUILD_PATH=$(ls "${CLONE_DIR}/build/libs/"*.jar | grep -v plain | head -n 1)
 
 if [ -z "$BUILD_PATH" ]; then
